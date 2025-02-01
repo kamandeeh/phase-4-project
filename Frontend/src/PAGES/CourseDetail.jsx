@@ -28,7 +28,7 @@ const CourseDetail = () => {
     try {
       setOrderStatus("Placing order...");
 
-      const response = await fetch("http://127.0.0.1:5000/order", {
+      const response = await fetch("https://phase-4-project-kf0b.onrender.com/order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
