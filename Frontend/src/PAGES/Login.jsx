@@ -23,7 +23,7 @@ const Login = () => {
     alert("Login successful!");
 
     // Redirect to homepage after successful login
-    navigate('courses');  // This will redirect to the homepage (root route)
+    navigate('/courses');  // This will redirect to the homepage (root route)
   };
 
   return (
