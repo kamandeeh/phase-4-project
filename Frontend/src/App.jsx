@@ -6,21 +6,26 @@ import CoursePage from "./PAGES/CoursesPage";
 import CourseDetail from "./PAGES/CourseDetail";
 import Navbar from "./COMPONENTS/Navbar";
 import Footer from "./COMPONENTS/Footer";
-
+import { UserProvider } from "./Context/UserContext";
+import { CourseProvider } from "./Context/CourseContext";
 
 function App() {
   return (
-    <Router> {/* Wrap the entire app with BrowserRouter (Router) */}
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/courses" element={<CoursePage />} />
-        <Route path="/courses/:id" element={<CourseDetail />} />
-      </Routes>
-      <Footer />
-    </Router> // Close the Router here
+    <Router>
+      <UserProvider>
+        <CourseProvider>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/courses" element={<CoursePage />} />
+            <Route path="/courses/:id" element={<CourseDetail />} />
+          </Routes>
+          <Footer />
+        </CourseProvider>
+      </UserProvider>
+    </Router>
   );
 }
 
