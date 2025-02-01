@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
 
     const login = (email, password) => {
-        fetch("http://127.0.0.1:5000/login", {
+        fetch("https://phase-4-project-kf0b.onrender.com/login", {
             method: "POST",
             headers: { "Content-type": "application/json" },
             body: JSON.stringify({ email, password }),
@@ -25,7 +25,7 @@ export const UserProvider = ({ children }) => {
                 sessionStorage.setItem("token", response.access_token);
                 setAuthToken(response.access_token);
 
-                fetch("http://127.0.0.1:5000/current_user", {
+                fetch("https://phase-4-project-kf0b.onrender.com/current_user", {
                     method: "GET",
                     headers: {
                         "Content-type": "application/json",
@@ -46,7 +46,7 @@ export const UserProvider = ({ children }) => {
     };
 
     const logout = () => {
-        fetch("http://127.0.0.1:5000/logout", {
+        fetch("https://phase-4-project-kf0b.onrender.com/logout", {
             method: "DELETE",
             headers: {
                 "Content-type": "application/json",
@@ -70,7 +70,7 @@ export const UserProvider = ({ children }) => {
 
     const fetchCurrentUser = () => {
         if (!authToken) return;
-        fetch("http://127.0.0.1:5000/current_user", {
+        fetch("https://phase-4-project-kf0b.onrender.com/current_user", {
             method: "GET",
             headers: {
                 "Content-type": "application/json",

@@ -15,7 +15,7 @@ export const CourseProvider = ({ children }) => {
   const [onChange, setOnchange] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/courses", {
+    fetch("https://phase-4-project-kf0b.onrender.com/courses", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export const CourseProvider = ({ children }) => {
   const addCourse = (title, description, price, image) => {
     toast.loading("Adding course...");
 
-    fetch("http://127.0.0.1:5000/add", {
+    fetch("https://phase-4-project-kf0b.onrender.com/courses", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ export const CourseProvider = ({ children }) => {
   const updateCourse = (id, title, description, price, image) => {
     toast.loading("Updating course...");
 
-    fetch(`http://127.0.0.1:5000/course/update/${id}`, {
+    fetch(`https://phase-4-project-kf0b.onrender.com/course/update/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +98,7 @@ export const CourseProvider = ({ children }) => {
   const deleteCourse = (id) => {
     toast.loading("Deleting course...");
 
-    fetch(`http://127.0.0.1:5000/course/delete/${id}`, {
+    fetch(`https://phase-4-project-kf0b.onrender.com/course/delete/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -128,7 +128,7 @@ export const CourseProvider = ({ children }) => {
   };
 
   const getCourseDetails = (id) => {
-    fetch(`http://127.0.0.1:5000/course/${id}`, {
+    fetch(`https://phase-4-project-kf0b.onrender.com/course/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
