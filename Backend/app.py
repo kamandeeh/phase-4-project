@@ -7,7 +7,7 @@ import os
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://phase_4_project_vwxq_user:k7G4gdncXZ9DMRyJPIG3l3Dg4WUq2lTS@dpg-cuf0sld6l47c73f8q9cg-a.oregon-postgres.render.com/phase_4_project_vwxq'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 migrate = Migrate(app, db)
 db.init_app(app)
