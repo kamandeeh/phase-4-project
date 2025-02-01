@@ -6,11 +6,12 @@ import CoursePage from "./PAGES/CoursesPage";
 import CourseDetail from "./PAGES/CourseDetail";
 import Navbar from "./COMPONENTS/Navbar";
 import Footer from "./COMPONENTS/Footer";
-import { UserProvider } from "./Context/UserContext";
+
 
 function App() {
   return (
-    <UserProvider>
+  
+     <>
       <Navbar/>
         <Routes>
           <Route path="/" element={<Homepage />} />
@@ -20,7 +21,7 @@ function App() {
           <Route path="/courses/:id" element={<CourseDetail />} />
         </Routes>
       <Footer/>
-  </UserProvider>
+      </>
   );
 }
 

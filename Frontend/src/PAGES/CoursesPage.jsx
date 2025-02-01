@@ -17,21 +17,29 @@ const CoursePage = () => {
       {/* Courses Section */}
       <section className="py-16 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((course) => (
-            <div key={course.id} className="bg-white shadow-md rounded-lg overflow-hidden">
-              <img src={course.image} alt={course.title} className="w-full h-48 object-cover" />
-              <div className="p-6">
-                <h3 className="text-2xl font-semibold text-blue-700 mb-4">{course.title}</h3>
-                <p className="text-gray-600 mb-4">{course.description}</p>
-                <a
-                  href={`/courses/${course.id}`}
-                  className="inline-block bg-blue-700 text-white px-6 py-2 rounded-full hover:bg-blue-800 transition"
-                >
-                  Learn More
-                </a>
+          {courses.length === 0 ? (
+            <p>No courses available at the moment.</p>
+          ) : (
+            courses.map((course) => (
+              <div key={course.id} className="bg-white shadow-md rounded-lg overflow-hidden">
+                <img 
+                  src={course.image_url} 
+                  alt={course.title || 'Course Image'} 
+                  className="w-full h-48 object-cover" 
+                />
+                <div className="p-6">
+                  <h3 className="text-2xl font-semibold text-blue-400 mb-4">{course.title || 'Untitled Course'}</h3>
+                  <p className="text-gray-600 mb-4">{course.description || 'No description available.'}</p>
+                  <a
+                    href={`/courses/${course.id}`}
+                    className="inline-block bg-green-400 text-white px-6 py-2 rounded-full hover:bg-blue-800 transition"
+                  >
+                    Learn More
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
 

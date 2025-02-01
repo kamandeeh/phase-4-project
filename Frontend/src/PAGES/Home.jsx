@@ -1,6 +1,7 @@
 import React from "react";
 import { useUser } from "../Context/UserContext";
 import { Link } from "react-router-dom"; 
+import ImageSlider from "../COMPONENTS/ImageSlider";
 
 const Homepage = () => {
   const { user } = useUser(); // Get user info (role) from context
@@ -17,7 +18,7 @@ const Homepage = () => {
           {!user && (
             <Link
               to="/signup"
-              className="bg-white text-blue-700 px-6 py-3 rounded-full text-lg font-semibold hover:bg-blue-400 transition"
+              className="bg-green-400 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-blue-400 transition"
             >
               Get Started
             </Link>
@@ -25,26 +26,7 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Available Courses Section */}
-      <section className="py-16 px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <h3 className="text-3xl font-semibold mb-8 text-black">Available Courses</h3>
-          {/* Display available courses */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Sample Course Card */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h4 className="text-2xl font-semibold mb-4 text-black">Course 1: Introduction to React</h4>
-              <p className="text-gray-600 mb-4">
-                Learn the basics of React, a powerful JavaScript library for building user interfaces.
-              </p>
-              <Link to="/course/1" className="text-blue-700 hover:underline">
-                View Course Details
-              </Link>
-            </div>
-            {/* Add more courses here */}
-          </div>
-        </div>
-      </section>
+      
 
       {/* Admin Features Section - Visible Only for Admin */}
       {user?.role === "admin" && (
@@ -63,7 +45,7 @@ const Homepage = () => {
                 </Link>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md">
-                <h4 className="text-2xl font-semibold mb-4 text-black">Manage Existing Courses</h4>
+                <h4 className="text-2xl font-semibold mb-4 text-green-700">Manage Existing Courses</h4>
                 <p className="text-gray-600 mb-4">Edit or delete existing courses on the platform.</p>
                 <Link
                   to="/manage-courses"
@@ -76,13 +58,8 @@ const Homepage = () => {
           </div>
         </section>
       )}
-
-      {/* Footer Section */}
-      <footer className="bg-blue-700 text-white py-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <p>&copy; 2025 Course Management Platform. All rights reserved.</p>
-        </div>
-      </footer>
+       <ImageSlider/>
+    
     </div>
   );
 };

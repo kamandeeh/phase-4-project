@@ -1,41 +1,162 @@
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { UserContext } from "./UserContext";
+import { useNavigate } from "react-router-dom";
 
-// Creating a Context for the Course Data
 export const CourseContext = createContext();
 
-// A Provider Component to wrap around the app or the part of it that needs access to the courses data
 export const CourseProvider = ({ children }) => {
-  const [courses] = useState([
-    {
-      id: 1,
-      title: "Introduction to Web Development",
-      description: "Learn the basics of web development, including HTML, CSS, and JavaScript. Start building your first website today!",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYdAdQnrVDOSNpvaWU3ZGrH5gfngFCGZimcQ&s", // Replace with your image
-    },
-    {
-      id: 2,
-      title: "Advanced JavaScript",
-      description: "Take your JavaScript skills to the next level. Learn advanced concepts like closures, async programming, and more.",
-      image: "https://via.placeholder.com/400x250", // Replace with your image
-    },
-    {
-      id: 3,
-      title: "React for Beginners",
-      description: "Dive into React, one of the most popular JavaScript libraries, and learn how to build modern web apps with it.",
-      image: "https://via.placeholder.com/400x250", // Replace with your image
-    },
-  ]);
+  const navigate = useNavigate();
+  const { authToken } = useContext(UserContext);
 
-  // Optionally, you can also manage selected course or other course-related state here.
-  
-  return (
-    <CourseContext.Provider value={{ courses }}>
-      {children}
-    </CourseContext.Provider>
-  );
+  const [courses, setCourses] = useState([]);
+  const [courseDetails, setCourseDetails] = useState(null);
+
+  const [onChange, setOnchange] = useState(true);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/courses", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setCourses(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching courses:", error);
+        toast.error("Failed to fetch courses.");
+      });
+  }, [onChange]);
+
+  const addCourse = (title, description, price, image) => {
+    toast.loading("Adding course...");
+
+    fetch("http://127.0.0.1:5000/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({ title, description, price, image }),
+    })
+      .then((resp) => resp.json())
+      .then((response) => {
+        if (response.success) {
+          toast.dismiss();
+          toast.success("Course added successfully!");
+          setOnchange(!onChange);
+        } else if (response.error) {
+          toast.dismiss();
+          toast.error(response.error);
+        } else {
+          toast.dismiss();
+          toast.error("Failed to add course.");
+        }
+      })
+      .catch((error) => {
+        toast.dismiss();
+        toast.error("Failed to add course.");
+        console.error("Error adding course:", error);
+      });
+  };
+
+  const updateCourse = (id, title, description, price, image) => {
+    toast.loading("Updating course...");
+
+    fetch(`http://127.0.0.1:5000/course/update/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({ title, description, price, image }),
+    })
+      .then((resp) => resp.json())
+      .then((response) => {
+        if (response.success) {
+          toast.dismiss();
+          toast.success("Course updated successfully!");
+          setOnchange(!onChange);
+        } else if (response.error) {
+          toast.dismiss();
+          toast.error(response.error);
+        } else {
+          toast.dismiss();
+          toast.error("Failed to update course.");
+        }
+      })
+      .catch((error) => {
+        toast.dismiss();
+        toast.error("Failed to update course.");
+        console.error("Error updating course:", error);
+      });
+  };
+
+  const deleteCourse = (id) => {
+    toast.loading("Deleting course...");
+
+    fetch(`http://127.0.0.1:5000/course/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then((resp) => resp.json())
+      .then((response) => {
+        if (response.success) {
+          toast.dismiss();
+          toast.success("Course deleted successfully!");
+          setOnchange(!onChange);
+          navigate("/");
+        } else if (response.error) {
+          toast.dismiss();
+          toast.error(response.error);
+        } else {
+          toast.dismiss();
+          toast.error("Failed to delete course.");
+        }
+      })
+      .catch((error) => {
+        toast.dismiss();
+        toast.error("Failed to delete course.");
+        console.error("Error deleting course:", error);
+      });
+  };
+
+  const getCourseDetails = (id) => {
+    fetch(`http://127.0.0.1:5000/course/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setCourseDetails(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching course details:", error);
+        toast.error("Failed to fetch course details.");
+      });
+  };
+
+  const data = {
+    courses,
+    courseDetails,
+    addCourse,
+    updateCourse,
+    deleteCourse,
+    getCourseDetails,
+  };
+
+  return <CourseContext.Provider value={data}>{children}</CourseContext.Provider>;
 };
 
-// Custom Hook to use the Course Context
+// Custom Hook to access the course context
 export const useCourses = () => {
   const context = useContext(CourseContext);
   if (!context) {
