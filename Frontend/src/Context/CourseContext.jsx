@@ -65,7 +65,7 @@ export const CourseProvider = ({ children }) => {
   const updateCourse = (id, title, description, price, image) => {
     toast.loading("Updating course...");
 
-    fetch(`https://phase-4-project-kf0b.onrender.com/course/update/${id}`, {
+    fetch(`https://phase-4-project-kf0b.onrender.com/course/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -97,7 +97,7 @@ export const CourseProvider = ({ children }) => {
   const deleteCourse = (id) => {
     toast.loading("Deleting course...");
 
-    fetch(`https://phase-4-project-kf0b.onrender.com/course/delete/${id}`, {
+    fetch(`https://phase-4-project-kf0b.onrender.com/course/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

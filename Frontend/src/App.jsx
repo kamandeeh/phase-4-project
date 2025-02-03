@@ -8,6 +8,10 @@ import Navbar from "./COMPONENTS/Navbar";
 import Footer from "./COMPONENTS/Footer";
 import { UserProvider } from "./Context/UserContext";
 import { CourseProvider } from "./Context/CourseContext";
+import ProfilePage from "./PAGES/Profile"; 
+import AdminDashboard from "./PAGES/AdminDashboard";
+
+
 
 function App() {
   return (
@@ -19,6 +23,8 @@ function App() {
             <Route path="/" element={<Homepage />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/courses" element={<CoursePage />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
           </Routes>
