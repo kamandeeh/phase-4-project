@@ -1,67 +1,44 @@
-import React from "react";
-import { useUser } from "../Context/UserContext";
-import { Link } from "react-router-dom"; 
-import ImageSlider from "../COMPONENTS/ImageSlider";
+import React, { useContext } from 'react';
+import { UserContext } from "../Context/UserContext";
 
-const Homepage = () => {
-  const { user } = useUser(); // Get user info (role) from context
+const Home = () => {
+  const { current_user, authToken, login } = useContext(UserContext);
+
+  if (!authToken) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="text-xl font-semibold text-gray-600">Loading...</div>
+      </div>
+    ); // Show a loading state while authToken is being fetched
+  }
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-blue-700 text-white py-20">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-4xl font-semibold mb-4">Welcome to the Course Management Platform</h2>
-          <p className="text-lg mb-6">
-            Manage and take courses to enhance your skills with ease and flexibility.
-          </p>
-          {!user && (
-            <Link
-              to="/signup"
-              className="bg-green-400 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-blue-400 transition"
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100">
+      <div className="bg-white p-8 rounded-xl shadow-lg text-center w-96 max-w-md">
+        <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Welcome to the Home Page</h1>
+        {current_user ? (
+          <div>
+            <p className="text-xl text-gray-700 mb-4">Hello, <span className="font-semibold text-indigo-600">{current_user.username}</span>!</p>
+            <button
+              onClick={login}
+              className="bg-green-600 text-white font-bold px-6 py-2 rounded-lg text-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300"
             >
               Get Started
-            </Link>
-          )}
-        </div>
-      </section>
-
-      
-
-      {/* Admin Features Section - Visible Only for Admin */}
-      {user?.role === "admin" && (
-        <section className="py-16 px-6 bg-gray-200">
-          <div className="max-w-7xl mx-auto text-center">
-            <h3 className="text-3xl font-semibold mb-8 text-black">Admin Panel</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h4 className="text-2xl font-semibold mb-4 text-black">Add a New Course</h4>
-                <p className="text-gray-600 mb-4">Add new courses to the platform for users to access.</p>
-                <Link
-                  to="/add-course"
-                  className="bg-blue-700 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-blue-800 transition"
-                >
-                  Add Course
-                </Link>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h4 className="text-2xl font-semibold mb-4 text-green-700">Manage Existing Courses</h4>
-                <p className="text-gray-600 mb-4">Edit or delete existing courses on the platform.</p>
-                <Link
-                  to="/manage-courses"
-                  className="bg-blue-700 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-blue-800 transition"
-                >
-                  Manage Courses
-                </Link>
-              </div>
-            </div>
+            </button>
           </div>
-        </section>
-      )}
-       <ImageSlider/>
-    
+        ) : (
+          <div>
+            <p className="text-xl text-gray-700 mb-4">Please log in or sign up to access your account.</p>
+            <button
+              className="text-blue-600 hover:text-blue-700 font-semibold"
+              onClick={() => alert('Navigate to login/signup')}>
+              Log in or Sign up
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default Homepage;
+export default Home;

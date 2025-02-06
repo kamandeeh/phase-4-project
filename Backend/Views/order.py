@@ -35,26 +35,38 @@ def get_order(order_id):
 
 
 @order_bp.route('/order', methods=['POST'])
-def add_order():
-    data = request.get_json()
-    user_id = data['user_id']
-    course_id = data['course_id']
-    order = Order.query.filter_by(user_id=user_id, course_id=course_id).first()
+def create_order():
+    try:
+        data = request.get_json()
+        print("📩 Received order data:", data)  # Debug request data
 
-    if order:
-        return jsonify({'error': 'Order already exists'}), 400
+        # Validate required fields
+        if not data or 'course_id' not in data or 'user_id' not in data:
+            return jsonify({"error": "Missing required fields"}), 400
 
-    new_order = Order(user_id=user_id, course_id=course_id)
-    db.session.add(new_order)
-    db.session.commit()
-    
-    order_data = {
-        'id': new_order.id,
-        'user_id': new_order.user_id,
-        'course_id': new_order.course_id,
-        'status': new_order.status
-    }
-    return jsonify(order_data), 201
+        # Create new order
+        new_order = Order(course_id=data['course_id'], user_id=data['user_id'])
+        db.session.add(new_order)
+        db.session.commit()
+
+        # ✅ Debug before returning response
+        response_data = {
+            "message": "Order placed successfully!",
+            "order": {
+                "id": new_order.id,
+                "course_id": new_order.course_id,
+                "user_id": new_order.user_id
+            }
+        }
+        print("📤 Sending response:", response_data)  
+
+        return jsonify(response_data), 201
+
+    except Exception as e:
+        import traceback
+        print("🔥 Error creating order:", traceback.format_exc())  
+        return jsonify({"error": str(e)}), 500
+
 
 
 @order_bp.route('/orders/<int:order_id>', methods=['PUT'])

@@ -3,8 +3,12 @@ from models import db, User, TokenBlocklist
 from werkzeug.security import check_password_hash
 from datetime import datetime, timezone
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
+from flask_cors import CORS  # Add this import
 
 auth_bp = Blueprint("auth_bp", __name__)
+# Configure CORS to allow credentials and specific origins
+CORS(auth_bp, supports_credentials=True, origins=["http://localhost:5173"])  # Update with your frontend origin
+
 
 # Login
 @auth_bp.route("/login", methods=["POST"])
@@ -34,13 +38,14 @@ def current_user():
     user_data = {
         'id': user.id,
         'email': user.email,
-        'username': user.username
+        'username': user.username,
+        'is_admin': user.is_admin
     }
 
     return jsonify(user_data)
 
-# Logout
-@auth_bp.route("/logout", methods=["DELETE"])
+# Logout route (in Flask)
+@auth_bp.route("/logout", methods=["DELETE"])  # Ensure DELETE method is used
 @jwt_required()
 def logout():
     jti = get_jwt()["jti"]

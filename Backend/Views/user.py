@@ -46,21 +46,32 @@ def get_user(user_id):
 @user_bp.route('/users', methods=['POST'])
 def add_user():
     data = request.get_json()
-    username = data['username']
-    email = data['email']
-    password_hash = generate_password_hash(data['password_hash'])
-    is_admin = data.get('is_admin', False)  # Default to False if not provided
 
-    check_username = User.query.filter_by(username=username).first()
-    check_email = User.query.filter_by(email=email).first()
+    try:
+        username = data['username']
+        email = data['email']
+        password = data['password']  # Use the raw password, not 'password_hash'
+        is_admin = data.get('is_admin', False)  # Default to False if not provided
 
-    if check_username or check_email:
-        return jsonify({"error": "Username/email exists"}), 406
-    else:
+        # Check for existing username or email
+        check_username = User.query.filter_by(username=username).first()
+        check_email = User.query.filter_by(email=email).first()
+
+        if check_username or check_email:
+            return jsonify({"error": "Username/email exists"}), 406
+
+        # Hash the raw password
+        password_hash = generate_password_hash(password)
+
+        # Create a new user
         new_user = User(username=username, email=email, password_hash=password_hash, is_admin=is_admin)
         db.session.add(new_user)
         db.session.commit()
         return jsonify({"success": "Added successfully"}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
 
 
 @user_bp.route('/users/<int:user_id>', methods=['PUT'])

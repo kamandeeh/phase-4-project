@@ -1,93 +1,140 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext();
-
-// Custom Hook to use the UserContext
-export const useUser = () => {
-    return useContext(UserContext);
-};
 
 export const UserProvider = ({ children }) => {
     const navigate = useNavigate();
     const [authToken, setAuthToken] = useState(() => sessionStorage.getItem("token"));
     const [current_user, setCurrentUser] = useState(null);
 
-    const signup = async (name, email, password) => {
-        try {
-            const response = await fetch("https://phase-4-project-kf0b.onrender.com/user", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password }),
-            });
+    console.log("Current user", current_user);
 
-            if (!response.ok) {
-                throw new Error("Signup failed");
-            }
+    // LOGIN
+    const login = (email, password) => {
+        fetch("http://127.0.0.1:5001/login", {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        })
+        .then((resp) => resp.json())
+        .then((response) => {
+            if (response.access_token) {
+                sessionStorage.setItem("token", response.access_token);
+                setAuthToken(response.access_token);
 
-            const data = await response.json();
-            if (data.access_token) {
-                sessionStorage.setItem("token", data.access_token);
-                setAuthToken(data.access_token);
-                await fetchCurrentUser(data.access_token);
-                navigate("/courses");
+                fetch('http://127.0.0.1:5001/current_user', {
+                    method: "GET",
+                    headers: {
+                        'Content-type': 'application/json',
+                        Authorization: `Bearer ${response.access_token}`,
+                    },
+                })
+                .then((response) => response.json())
+                .then((response) => {
+                    if (response.email) {
+                        setCurrentUser(response);
+                    }
+                });
+
+                navigate("/");
+            } else if (response.error) {
+                console.error(response.error);
             } else {
-                throw new Error(data.error || "Signup error");
+                console.error("Failed to login");
             }
-        } catch (error) {
-            console.error("Signup error:", error.message);
-            throw error;
-        }
+        });
     };
 
-    const login = async (email, password) => {
-        try {
-            const response = await fetch("https://phase-4-project-kf0b.onrender.com/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-            });
+    // LOGOUT
+    const logout = () => {
+        fetch("http://127.0.0.1:5001/logout", {
+            method: "DELETE",
+            headers: {
+                'Content-type': 'application/json',
+                Authorization: `Bearer ${authToken}`,
+            },
+        })
+        .then((resp) => resp.json())
+        .then((response) => {
+            if (response.success) {
+                sessionStorage.removeItem("token");
+                setAuthToken(null);
+                setCurrentUser(null);
 
-            if (!response.ok) throw new Error("Login failed");
-
-            const data = await response.json();
-            if (data.access_token) {
-                sessionStorage.setItem("token", data.access_token);
-                setAuthToken(data.access_token);
-                await fetchCurrentUser(data.access_token);
-                navigate("/courses");
-            } else {
-                throw new Error("Invalid credentials");
+                navigate("/login");
             }
-        } catch (error) {
-            console.error("Login error:", error.message);
-            throw error;
-        }
+        });
     };
 
-    const fetchCurrentUser = async (token = authToken) => {
-        if (!token) return;
+    // FETCH CURRENT USER
+    useEffect(() => {
+        fetchCurrentUser();
+    }, []);
 
-        try {
-            const response = await fetch("https://phase-4-project-kf0b.onrender.com/current_user", {
+    const fetchCurrentUser = () => {
+        if (authToken) {
+            fetch('http://127.0.0.1:5001/current_user', {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    'Content-type': 'application/json',
+                    Authorization: `Bearer ${authToken}`,
                 },
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                if (response.email) {
+                    setCurrentUser(response);
+                }
             });
-
-            if (!response.ok) throw new Error("Failed to fetch user");
-
-            const data = await response.json();
-            if (data.email) setCurrentUser(data);
-        } catch (error) {
-            console.error("Fetch user error:", error.message);
         }
+    };
+
+    // ADD USER (Sign-up)
+    const addUser = (username, email, password) => {
+        fetch("http://127.0.0.1:5001/users", {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify({ username, email, password }),
+        })
+        .then((resp) => resp.json())
+        .then((response) => {
+            if (response.msg) {
+                navigate("/login");
+            } else if (response.error) {
+                console.error(response.error);
+            } else {
+                console.error("Failed to add user");
+            }
+        });
+    };
+
+    // UPDATE USER
+    const updateUser = () => {
+        console.log("Updating user:");
+    };
+
+    // DELETE USER
+    const deleteUser = async (userId) => {
+        console.log("Deleting user:", userId);
+    };
+
+    const data = {
+        authToken,
+        login,
+        current_user,
+        logout,
+        addUser,
+        updateUser,
+        deleteUser,
     };
 
     return (
-        <UserContext.Provider value={{ authToken, login, signup, current_user }}>
+        <UserContext.Provider value={data}>
             {children}
         </UserContext.Provider>
     );

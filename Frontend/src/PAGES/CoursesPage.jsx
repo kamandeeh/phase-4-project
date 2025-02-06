@@ -1,56 +1,50 @@
-import React from 'react';
-import { useCourses } from '../Context/CourseContext'; // Import the useCourses hook
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-const CoursePage = () => {
-  const { courses } = useCourses(); // Access courses from context
+function CoursePage() {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);  // Add loading state
+  const [error, setError] = useState("");  // Add error state
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5001/courses"); // Adjust the URL to your API endpoint
+        const data = await response.json();
+
+        if (response.ok) {
+          setCourses(data);  // Store the fetched courses in the state
+        } else {
+          setError("Failed to load courses");
+        }
+      } catch (err) {
+        setError("Error fetching courses");
+      } finally {
+        setLoading(false);  // Set loading to false after the fetch completes
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  if (loading) return <p className="text-center mt-10 text-gray-500">Loading...</p>; // Show loading indicator
+
+  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>; // Show error message
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Header Section */}
-      <header className="bg-blue-700 text-white p-6 shadow-md">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-3xl font-semibold">Available Courses</h1>
-          <p className="text-xl mt-2">Enhance your skills with our expertly crafted courses.</p>
-        </div>
-      </header>
-
-      {/* Courses Section */}
-      <section className="py-16 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.length === 0 ? (
-            <p>No courses available at the moment.</p>
-          ) : (
-            courses.map((course) => (
-              <div key={course.id} className="bg-white shadow-md rounded-lg overflow-hidden">
-                <img 
-                  src={course.image_url} 
-                  alt={course.title || 'Course Image'} 
-                  className="w-full h-48 object-cover" 
-                />
-                <div className="p-6">
-                  <h3 className="text-2xl font-semibold text-blue-400 mb-4">{course.title || 'Untitled Course'}</h3>
-                  <p className="text-gray-600 mb-4">{course.description || 'No description available.'}</p>
-                  <a
-                    href={`/courses/${course.id}`}
-                    className="inline-block bg-green-400 text-white px-6 py-2 rounded-full hover:bg-blue-800 transition"
-                  >
-                    Learn More
-                  </a>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
-
-      {/* Footer Section */}
-      <footer className="bg-blue-700 text-white py-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <p>&copy; 2025 My Website. All rights reserved.</p>
-        </div>
-      </footer>
+    <div className="p-6 max-w-4xl mx-auto mt-12 bg-white shadow-lg rounded-lg">
+      <h2 className="text-3xl font-semibold text-gray-800 mb-6">Available Courses</h2>
+      <ul className="space-y-4">
+        {courses.map((course) => (
+          <li key={course.id} className="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100">
+            <Link to={`/courses/${course.id}`} className="text-blue-600 text-xl font-medium hover:text-blue-800 transition duration-300">
+              {course.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
+}
 
 export default CoursePage;

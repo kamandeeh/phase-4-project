@@ -1,77 +1,53 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import React, { useState, useContext } from "react";
+import { UserContext } from "../Context/UserContext"; // Adjust path as needed
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  
-  const navigate = useNavigate(); // Initialize the useNavigate hook
+const LoginPage = () => {
+  const { login } = useContext(UserContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
-
-    // Simple validation
-    if (!email || !password) {
-      setError('Please fill in all fields.');
-      return;
-    }
-
-    // Here, add your login logic (e.g., API call)
-    console.log("User Logged In: ", { email, password });
-    alert("Login successful!");
-
-    // Redirect to homepage after successful login
-    navigate('/courses');  // This will redirect to the homepage (root route)
+    login(email, password);
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-gray-500 rounded-lg shadow-md">
-      <h2 className="text-center text-2xl font-semibold mb-4">Login</h2>
-      
-      {/* Display error message */}
-      {error && <p className="text-red-600 text-sm text-center mb-4">{error}</p>}
-
-      <form onSubmit={handleLogin}>
-        {/* Email Field */}
-        <div className="mb-6">
-          <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-          <input
-            type="email"
-            id="email"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="john.doe@company.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-
-        {/* Password Field */}
-        <div className="mb-6">
-          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-          <input
-            type="password"
-            id="password"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="•••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Login
-        </button>
-      </form>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h1 className="text-2xl font-bold text-center mb-6 text-green-400">Login</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="text-gray-600 font-bold">Email</label>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="mb-6">
+          <label className="text-gray-600 font-bold">Password</label>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full p-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;

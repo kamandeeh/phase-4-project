@@ -1,165 +1,77 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { UserContext } from "./UserContext";
-import { useNavigate } from "react-router-dom";
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { UserContext } from './UserContext';
 
 export const CourseContext = createContext();
 
 export const CourseProvider = ({ children }) => {
-  const navigate = useNavigate();
-  const { authToken } = useContext(UserContext);
+  const { current_user } = useContext(UserContext); // Get current user from UserContext
+  const [courses, setCourses] = useState([]); // Store available courses
+  const [purchasedCourses, setPurchasedCourses] = useState([]); // Store user’s purchased courses
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const [courses, setCourses] = useState([]);
-  const [courseDetails, setCourseDetails] = useState(null);
-
-  const [onChange, setOnchange] = useState(true);
-
+  // Fetch all available courses
   useEffect(() => {
-    fetch("https://phase-4-project-kf0b.onrender.com/courses", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCourses(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching courses:", error);
-        toast.error("Failed to fetch courses.");
-      });
-  }, [onChange]);
-
-  const addCourse = (title, description, price, image) => {
-    toast.loading("Adding course...");
-
-    fetch("https://phase-4-project-kf0b.onrender.com/courses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-      body: JSON.stringify({ title, description, price, image }),
-    })
-      .then((resp) => resp.json())
-      .then((response) => {
-        if (response.success) {
-          toast.dismiss();
-          toast.success("Course added successfully!");
-          setOnchange(!onChange);
-        } else if (response.error) {
-          toast.dismiss();
-          toast.error(response.error);
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5001/courses'); 
+        const data = await response.json();
+        if (response.ok) {
+          setCourses(data);
         } else {
-          toast.dismiss();
-          toast.error("Failed to add course.");
+          setError(data.message || 'Failed to load courses');
         }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error("Failed to add course.");
-        console.error("Error adding course:", error);
+      } catch (err) {
+        setError('Error fetching courses');
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  // Add order function (formerly purchaseCourse)
+  const addOrder = async (courseId) => {
+    console.log("🔍 Checking user before placing order:", current_user);  // ✅ Debug user
+    
+    if (!current_user || !current_user.id) {  
+      alert("You must be logged in to place an order.");
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://127.0.0.1:5001/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(current_user.authToken && { 'Authorization': `Bearer ${current_user.authToken}` }),
+        },
+        body: JSON.stringify({
+          course_id: courseId,
+          user_id: current_user.id,
+        }),
       });
+  
+      const data = await response.json();
+      console.log("📩 Order response:", data);  // ✅ Debug response
+  
+      if (response.ok) {
+        alert("Order placed successfully!");
+      } else {
+        alert(`Error placing order: ${data.error}`);
+      }
+    } catch (err) {
+      console.error("🔥 Order failed:", err);
+      alert("Failed to place order. Try again later.");
+    }
   };
+  
+  
 
-  const updateCourse = (id, title, description, price, image) => {
-    toast.loading("Updating course...");
-
-    fetch(`https://phase-4-project-kf0b.onrender.com/course/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-      body: JSON.stringify({ title, description, price, image }),
-    })
-      .then((resp) => resp.json())
-      .then((response) => {
-        if (response.success) {
-          toast.dismiss();
-          toast.success("Course updated successfully!");
-          setOnchange(!onChange);
-        } else if (response.error) {
-          toast.dismiss();
-          toast.error(response.error);
-        } else {
-          toast.dismiss();
-          toast.error("Failed to update course.");
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error("Failed to update course.");
-        console.error("Error updating course:", error);
-      });
-  };
-
-  const deleteCourse = (id) => {
-    toast.loading("Deleting course...");
-
-    fetch(`https://phase-4-project-kf0b.onrender.com/course/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-    })
-      .then((resp) => resp.json())
-      .then((response) => {
-        if (response.success) {
-          toast.dismiss();
-          toast.success("Course deleted successfully!");
-          setOnchange(!onChange);
-          navigate("/");
-        } else if (response.error) {
-          toast.dismiss();
-          toast.error(response.error);
-        } else {
-          toast.dismiss();
-          toast.error("Failed to delete course.");
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error("Failed to delete course.");
-        console.error("Error deleting course:", error);
-      });
-  };
-
-  const getCourseDetails = (id) => {
-    fetch(`https://phase-4-project-kf0b.onrender.com/course/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCourseDetails(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching course details:", error);
-        toast.error("Failed to fetch course details.");
-      });
-  };
-
-  const data = {
-    courses,
-    courseDetails,
-    addCourse,
-    updateCourse,
-    deleteCourse,
-    getCourseDetails,
-  };
-
-  return <CourseContext.Provider value={data}>{children}</CourseContext.Provider>;
+  return (
+    <CourseContext.Provider value={{ courses, purchasedCourses, addOrder, loading, error }}>
+      {children}
+    </CourseContext.Provider>
+  );
 };
 
-// Custom Hook to access the course context
-export const useCourses = () => {
-  const context = useContext(CourseContext);
-  if (!context) {
-    throw new Error("useCourses must be used within a CourseProvider");
-  }
-  return context;
-};
+export default CourseContext;
