@@ -5,7 +5,6 @@ from flask_jwt_extended import JWTManager
 from datetime import timedelta
 import os
 from flask_cors import CORS
-from flask_login import LoginManager
 
 
 
@@ -14,8 +13,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://phase_4_project_cp5x_user:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 migrate = Migrate(app, db)
 db.init_app(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
 CORS(app)
 
 

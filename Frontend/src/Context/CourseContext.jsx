@@ -14,7 +14,7 @@ export const CourseProvider = ({ children }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5001/courses'); 
+        const response = await fetch('https://phase-4-project-1-6xvb.onrender.com/courses'); 
         const data = await response.json();
         if (response.ok) {
           setCourses(data);
@@ -39,7 +39,7 @@ export const CourseProvider = ({ children }) => {
     }
   
     try {
-      const response = await fetch('http://127.0.0.1:5001/order', {
+      const response = await fetch('https://phase-4-project-1-6xvb.onrender.com/order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

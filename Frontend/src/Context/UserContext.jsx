@@ -12,7 +12,7 @@ export const UserProvider = ({ children }) => {
 
     // LOGIN
     const login = (email, password) => {
-        fetch("http://127.0.0.1:5001/login", {
+        fetch("https://phase-4-project-1-6xvb.onrender.com/login", {
             method: "POST",
             headers: {
                 'Content-type': 'application/json',
@@ -25,7 +25,7 @@ export const UserProvider = ({ children }) => {
                 sessionStorage.setItem("token", response.access_token);
                 setAuthToken(response.access_token);
 
-                fetch('http://127.0.0.1:5001/current_user', {
+                fetch('https://phase-4-project-1-6xvb.onrender.com/current_user', {
                     method: "GET",
                     headers: {
                         'Content-type': 'application/json',
@@ -50,7 +50,7 @@ export const UserProvider = ({ children }) => {
 
     // LOGOUT
     const logout = () => {
-        fetch("http://127.0.0.1:5001/logout", {
+        fetch("https://phase-4-project-1-6xvb.onrender.com/logout", {
             method: "DELETE",
             headers: {
                 'Content-type': 'application/json',
@@ -76,7 +76,7 @@ export const UserProvider = ({ children }) => {
 
     const fetchCurrentUser = () => {
         if (authToken) {
-            fetch('http://127.0.0.1:5001/current_user', {
+            fetch('https://phase-4-project-1-6xvb.onrender.com/current_user', {
                 method: "GET",
                 headers: {
                     'Content-type': 'application/json',
@@ -94,7 +94,7 @@ export const UserProvider = ({ children }) => {
 
     // ADD USER (Sign-up)
     const addUser = (username, email, password) => {
-        fetch("http://127.0.0.1:5001/users", {
+        fetch("https://phase-4-project-1-6xvb.onrender.com/users", {
             method: "POST",
             headers: {
                 'Content-type': 'application/json',
