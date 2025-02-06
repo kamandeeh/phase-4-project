@@ -22,7 +22,7 @@ TAILWIND
 ### Prerequisites
 Ensure you have the following installed:
 - Python (>=3.8)
-- PostgreSQL (for production use)
+- PostgreSQL (for production use, done in render)
 - Virtual environment (optional but recommended)
 
 
