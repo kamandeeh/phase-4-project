@@ -10,7 +10,7 @@ from flask_login import LoginManager
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://phase_4_project_cp5x_user:Ac6lJU7hjwo7J65MyWImpNkKeDT899cw@dpg-cuigqg2n91rc73biavb0-a.oregon-postgres.render.com/phase_4_project_cp5x'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 migrate = Migrate(app, db)
 db.init_app(app)
