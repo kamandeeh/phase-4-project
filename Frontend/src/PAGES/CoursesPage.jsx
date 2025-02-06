@@ -9,7 +9,7 @@ function CoursePage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("https://phase-4-project-1-6xvb.onrender.com/courses"); // Adjust the URL to your API endpoint
+        const response = await fetch("https://phase-4-project-3-ymm4.onrender.com/courses"); // Adjust the URL to your API endpoint
         const data = await response.json();
 
         if (response.ok) {

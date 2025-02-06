@@ -12,7 +12,7 @@ function CourseDetail() {
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
-        const response = await fetch(`https://phase-4-project-1-6xvb.onrender.com/courses/${id}`);
+        const response = await fetch(`https://phase-4-project-3-ymm4.onrender.com/courses/${id}`);
         const data = await response.json();
         if (response.ok) {
           setCourse(data);

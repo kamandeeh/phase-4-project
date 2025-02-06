@@ -12,7 +12,7 @@ const AdminDashboard = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch("https://phase-4-project-1-6xvb.onrender.com/courses");
+      const response = await fetch("https://phase-4-project-3-ymm4.onrender.com/courses");
       const data = await response.json();
       setCourses(data);
     } catch (error) {
@@ -24,7 +24,7 @@ const AdminDashboard = () => {
     if (!newCourse.title || !newCourse.description) return alert("Fill in all fields");
 
     try {
-      const response = await fetch("https://phase-4-project-1-6xvb.onrender.com/courses", {
+      const response = await fetch("https://phase-4-project-3-ymm4.onrender.com/courses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
 
   const handleDeleteCourse = async (id) => {
     try {
-      const response = await fetch(`https://phase-4-project-1-6xvb.onrender.com/courses/${id}`, {
+      const response = await fetch(`https://phase-4-project-3-ymm4.onrender.com/courses/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
 
   const handleUpdateCourse = async (id, updatedCourse) => {
     try {
-      const response = await fetch(`https://phase-4-project-1-6xvb.onrender.com/courses/${id}`, {
+      const response = await fetch(`https://phase-4-project-3-ymm4.onrender.com/courses/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
